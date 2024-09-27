@@ -2,12 +2,14 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import { handleForm } from "./HandleForm";
+import { InputHTMLAttributes } from "react";
+
 
 const ButtonComp = () => {
     const { pending } = useFormStatus();
 
     return (
-        <button 
+        <button
             className="w-[360px] h-12 border-2 rounded-2xl my-1"
             disabled={pending}
         >
@@ -16,39 +18,58 @@ const ButtonComp = () => {
     )
 }
 
+interface InputProps {
+    name: string;
+    errors?: string[];
+}
+
+const InputWithErrors = ({ errors = [], name, ...rest }:
+    InputProps & InputHTMLAttributes<HTMLInputElement>) => {
+    return (
+        <>
+        <input
+            className="w-[360px] h-12 border-2 rounded-2xl my-1"
+            name={name}
+            type={name}
+            required
+            {...rest}
+        />
+        {errors.map((error, index) =>
+            <span key={index} className="text-red-500 font-light text-sm">
+                {error}
+            </span>
+        )}
+        </>
+    )
+}
+
 export default function Home() {
 
-    const [state, action] = useFormState(handleForm, false);
+    const [state, action] = useFormState(handleForm, {success:false});
 
     return (
         <div className="bg-orange-50 w-screen h-screen flex justify-center items-center">
-            <form 
+            <form
                 className="border-2 w-[400px] h-[300px] flex flex-col items-center"
                 action={action}
             >
-                <input
-                    className="w-[360px] h-12 border-2 rounded-2xl my-1"
+                <InputWithErrors
                     name="email"
-                    type="email"
                     placeholder="Email"
-                    required
+                    errors={state.error?.fieldErrors.email}
                 />
-                <input
-                    className="w-[360px] h-12 border-2 rounded-2xl my-1"
+                <InputWithErrors
                     name="name"
-                    type="name"
                     placeholder="Name"
-                    required
+                    errors={state.error?.fieldErrors.name}
                 />
-                <input
-                    className="w-[360px] h-12 border-2 rounded-2xl my-1"
+                <InputWithErrors
                     name="password"
-                    type="password"
                     placeholder="Password"
-                    required
+                    errors={state.error?.fieldErrors.password}
                 />
                 <ButtonComp />
-                {state ?
+                {state.success ?
                     <div>
                         Welcome Back!
                     </div>
