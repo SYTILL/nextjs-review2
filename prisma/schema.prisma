@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  username   String   @unique
+  username   String   @id @unique
   password   String
   email      String   @unique
   bio        String
@@ -25,7 +25,7 @@ model User {
 }
 
 model Tweet {
-  id           Int      @id
+  id           Int      @id @unique
   user         User     @relation(fields: [userUsername], references: [username])
   userUsername String
   tweet        String
@@ -35,7 +35,7 @@ model Tweet {
 }
 
 model Like {
-  id           Int      @id
+  id           Int      @id @unique
   user         User     @relation(fields: [userUsername], references: [username])
   tweet        Tweet    @relation(fields: [tweetId], references: [id])
   created_at   DateTime @default(now())
